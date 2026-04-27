@@ -1,0 +1,19 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/admin/login"
+    },
+    {
+      "source": "/admin/index",
+      "destination": "/group"
+    },
+    {
+      "source": "/link/:code",
+      "destination": "/link.html?code=:code"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>验证码链接</title>
+  <link rel="stylesheet" href="/assets/review.css">
+</head>
+<body class="link-shell">
+  <main id="linkCard" class="link-card">
+    <p class="eyebrow">Public Link Review</p>
+    <h1 id="linkTitle">验证码获取</h1>
+    <p id="linkStatus" class="muted"></p>
+    <div class="info-box">
+      <span>手机号</span>
+      <strong id="linkPhone">-</strong>
+    </div>
+    <div class="info-box">
+      <span>验证码</span>
+      <strong id="linkCode">-</strong>
+    </div>
+    <button id="fetchCodeBtn" class="primary">模拟获取验证码</button>
+    <section class="instruction-box">
+      <div id="mediaWrap"></div>
+      <p id="instructionText"></p>
+    </section>
+  </main>
+  <script src="/assets/review-data.js"></script>
+  <script>
+    window.ReviewData.ensureSeed();
+    const code = new URLSearchParams(location.search).get("code") || "LINK-A001";
+    const entry = window.ReviewData.getLinkByCode(code);
+    const titleMap = { A: "验证码获取", B: "安全验证", C: "短信验证" };
+    document.getElementById("linkTitle").textContent = titleMap[entry.interface_type] || "验证码获取";
+    document.body.classList.add(`theme-${String(entry.interface_type || "A").toLowerCase()}`);
+    document.getElementById("linkPhone").textContent = entry.phone || "未绑定";
+    document.getElementById("linkCode").textContent = entry.verify_code || "未获取";
+    document.getElementById("instructionText").textContent = entry.instruction || "";
+    document.getElementById("linkStatus").textContent = entry.status_text || "演示链接";
+    if (entry.media_url) {
+      const media = entry.media_type === "video"
+        ? `<video controls src="${entry.media_url}"></video>`
+        : `<img src="${entry.media_url}" alt="">`;
+      document.getElementById("mediaWrap").innerHTML = media;
+    }
+    document.getElementById("fetchCodeBtn").addEventListener("click", () => {
+      const result = window.ReviewData.simulateCode(code);
+      document.getElementById("linkPhone").textContent = result.phone;
+      document.getElementById("linkCode").textContent = result.verify_code;
+      document.getElementById("linkStatus").textContent = result.status_text;
+    });
+  </script>
+</body>
+</html>

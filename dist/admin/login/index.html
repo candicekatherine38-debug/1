@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>管理后台登录</title>
+  <link rel="stylesheet" href="/assets/review.css">
+</head>
+<body class="login-shell">
+  <main class="login-card">
+    <p class="eyebrow">Vercel Review Build</p>
+    <h1>管理后台</h1>
+    <p class="supporting">这是为 Vercel 审阅准备的静态演示版。数据保存在当前浏览器，不连接 PHP 或 MySQL。</p>
+    <form id="loginForm" class="stack">
+      <label>用户名<input name="username" value="admin" autocomplete="username" required></label>
+      <label>密码<input name="password" type="password" value="admin123456" autocomplete="current-password" required></label>
+      <button type="submit" class="primary">进入后台</button>
+      <p id="loginMsg" class="muted"></p>
+    </form>
+    <div class="hint">
+      <div>演示账号：`admin / admin123456`</div>
+      <div>普通管理员：`editor / editor123456`</div>
+    </div>
+  </main>
+  <script src="/assets/review-data.js"></script>
+  <script>
+    window.ReviewData.ensureSeed();
+    document.getElementById("loginForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const result = window.ReviewData.login(String(form.get("username") || ""), String(form.get("password") || ""));
+      if (result.ok) {
+        location.href = "/group";
+        return;
+      }
+      document.getElementById("loginMsg").textContent = result.message;
+    });
+  </script>
+</body>
+</html>

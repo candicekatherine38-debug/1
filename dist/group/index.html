@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secure V2 Review</title>
+  <link rel="stylesheet" href="/assets/review.css">
+</head>
+<body class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <div>
+        <strong>Secure V2</strong>
+        <small>Vercel Review</small>
+      </div>
+    </div>
+    <button class="nav active" data-tab="overview">概览</button>
+    <button class="nav" data-tab="groups">分组</button>
+    <button class="nav" data-tab="phones">号码池</button>
+    <button class="nav" data-tab="links">链接池</button>
+    <button class="nav" data-tab="instructions">使用说明</button>
+    <button class="nav" data-tab="schedule">定时任务</button>
+    <button class="nav super-only" data-tab="admins">管理员</button>
+    <button class="nav" data-tab="security">安全</button>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">演示站点</p>
+        <h1 id="title">概览</h1>
+        <p id="accountLine" class="muted"></p>
+      </div>
+      <div class="toolbar">
+        <button id="returnSuperBtn" class="ghost hidden">返回超管</button>
+        <a class="ghost-link" href="/admin/changePassword">修改密码</a>
+        <button id="resetDemoBtn" class="ghost">重置演示数据</button>
+        <button id="logoutBtn" class="ghost">退出</button>
+      </div>
+    </header>
+
+    <section id="overview" class="tab active">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">审阅模式</p>
+          <h2>可直接在 Vercel 预览界面和流程</h2>
+          <p class="muted">这版保留了后台结构、链接展示、管理流转和主要交互，用于审阅设计与产品流程。不会触达真实数据库、短信接口或文件系统。</p>
+        </div>
+        <div class="hero-stats">
+          <div><strong id="statGroups">0</strong><span>分组</span></div>
+          <div><strong id="statPhones">0</strong><span>号码</span></div>
+          <div><strong id="statLinks">0</strong><span>链接</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="groups" class="tab">
+      <div class="panel">
+        <div class="section-head">
+          <h2>分组管理</h2>
+          <button id="createGroupBtn" class="primary">新建分组</button>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>名称</th><th>备注</th><th>创建时间</th><th>操作</th></tr></thead>
+          <tbody id="groupRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="phones" class="tab">
+      <div class="panel">
+        <div class="section-head">
+          <h2>号码池</h2>
+          <div class="toolbar">
+            <button id="addPhoneBtn" class="primary">添加号码</button>
+            <button id="importPhoneBtn" class="ghost">批量导入</button>
+          </div>
+        </div>
+        <div class="filters">
+          <select id="phoneGroup"></select>
+          <input id="phoneKeyword" placeholder="搜索手机号">
+          <button id="phoneSearchBtn" class="ghost">查询</button>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>手机号</th><th>API</th><th>次数</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody id="phoneRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="links" class="tab">
+      <div class="panel">
+        <div class="section-head">
+          <h2>链接池</h2>
+          <div class="toolbar">
+            <button id="createLinksBtn" class="primary">生成链接</button>
+            <button id="createByPhonesBtn" class="ghost">按号码生成</button>
+          </div>
+        </div>
+        <div class="filters">
+          <select id="linkGroup"></select>
+          <input id="linkSearch" placeholder="按手机号搜索">
+          <button id="linkSearchBtn" class="ghost">查询</button>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>链接</th><th>手机号</th><th>验证码</th><th>状态</th><th>界面</th><th>操作</th></tr></thead>
+          <tbody id="linkRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="instructions" class="tab">
+      <div class="panel stack">
+        <div class="section-head">
+          <h2>使用说明</h2>
+          <button id="saveInstructionBtn" class="primary">保存说明</button>
+        </div>
+        <select id="instructionGroup"></select>
+        <textarea id="instructionContent" class="editor" placeholder="这里模拟原系统的分组说明内容"></textarea>
+        <label>媒体链接<input id="instructionMedia" placeholder="https://example.com/demo.jpg"></label>
+      </div>
+    </section>
+
+    <section id="schedule" class="tab">
+      <div class="panel stack">
+        <div class="section-head">
+          <h2>定时任务</h2>
+          <button id="saveScheduleBtn" class="primary">保存设置</button>
+        </div>
+        <select id="scheduleGroup"></select>
+        <div class="grid">
+          <label><input id="resetEnabled" type="checkbox"> 每日重置使用次数</label>
+          <label>重置时间<input id="resetTime" type="time"></label>
+          <label><input id="deleteEnabled" type="checkbox"> 删除过期号码</label>
+          <label>过期小时<input id="deleteHours" type="number" min="1"></label>
+        </div>
+      </div>
+    </section>
+
+    <section id="admins" class="tab">
+      <div class="panel">
+        <div class="section-head">
+          <h2>管理员</h2>
+          <button id="createAdminBtn" class="primary">新建管理员</button>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>用户名</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+          <tbody id="adminRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="security" class="tab">
+      <div class="panel stack">
+        <h2>安全修复项</h2>
+        <ul class="plain-list">
+          <li>`/admin/delete` 仅超管可用，且只能操作自己名下管理员。</li>
+          <li>所有分组写操作都校验 `group_id` 归属。</li>
+          <li>上传接口在真实版中必须登录且加 CSRF，本演示版只展示交互入口。</li>
+          <li>链接分配仅影响当前分组，不再重置全部租户的轮询状态。</li>
+          <li>Vercel 评审版不接真实 API、不保存真实文件，也不暴露数据库。</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="modal">
+    <form method="dialog" id="modalForm" class="modal-card"></form>
+  </dialog>
+  <div id="toast" class="toast"></div>
+
+  <script src="/assets/review-data.js"></script>
+  <script src="/assets/review-app.js"></script>
+</body>
+</html>
