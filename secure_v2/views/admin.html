@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>管理后台</title>
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">Secure V2</div>
+      <button data-tab="groups" class="nav active">分组</button>
+      <button data-tab="phones" class="nav">号码池</button>
+      <button data-tab="links" class="nav">链接池</button>
+      <button data-tab="instructions" class="nav">使用说明</button>
+      <button data-tab="schedule" class="nav">定时任务</button>
+      <button data-tab="admins" class="nav super-only">管理员</button>
+      <button data-tab="security" class="nav">安全</button>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">分组</h1>
+          <p id="accountLine"></p>
+        </div>
+        <div class="toolbar">
+          <button id="returnSuperBtn" class="ghost hidden">返回超管</button>
+          <a class="ghost" href="/admin/changePassword">修改密码</a>
+          <a class="danger-text" href="/admin/logout">退出</a>
+        </div>
+      </header>
+
+      <section id="groups" class="tab active">
+        <div class="panel">
+          <div class="panel-head"><h2>分组管理</h2><button id="newGroupBtn" class="primary">新建分组</button></div>
+          <table><thead><tr><th>ID</th><th>名称</th><th>备注</th><th>创建时间</th><th>操作</th></tr></thead><tbody id="groupRows"></tbody></table>
+        </div>
+      </section>
+
+      <section id="phones" class="tab">
+        <div class="panel stack">
+          <div class="panel-head">
+            <h2>号码池</h2>
+            <div class="toolbar"><button id="addPhoneBtn" class="primary">添加号码</button><button id="batchPhoneBtn">批量导入</button><button id="exportPhonesBtn">导出</button></div>
+          </div>
+          <div class="filters">
+            <select id="phoneGroup"></select>
+            <input id="phoneKeyword" placeholder="搜索手机号">
+            <button id="loadPhonesBtn">查询</button>
+            <button id="batchResetPhonesBtn">批量重置</button>
+            <button id="batchDisablePhonesBtn">批量禁用</button>
+            <button id="batchDeletePhonesBtn" class="danger">批量删除</button>
+          </div>
+          <table><thead><tr><th><input type="checkbox" id="checkAllPhones"></th><th>ID</th><th>手机号</th><th>API</th><th>次数</th><th>状态</th><th>操作</th></tr></thead><tbody id="phoneRows"></tbody></table>
+        </div>
+      </section>
+
+      <section id="links" class="tab">
+        <div class="panel stack">
+          <div class="panel-head">
+            <h2>链接池</h2>
+            <div class="toolbar"><button id="genLinksBtn" class="primary">生成链接</button><button id="genByPhonesBtn">按号码生成</button><button id="exportLinksBtn">导出全部</button><button id="exportValidLinksBtn">导出有效</button></div>
+          </div>
+          <div class="filters">
+            <select id="linkGroup"></select>
+            <input id="linkPhoneSearch" placeholder="按手机号搜索">
+            <button id="loadLinksBtn">查询</button>
+            <button id="batchResetLinksBtn">批量重置</button>
+            <button id="batchDeleteLinksBtn" class="danger">批量删除</button>
+          </div>
+          <table><thead><tr><th><input type="checkbox" id="checkAllLinks"></th><th>ID</th><th>链接</th><th>手机号</th><th>验证码</th><th>状态</th><th>界面</th><th>操作</th></tr></thead><tbody id="linkRows"></tbody></table>
+          <div class="panel subpanel">
+            <h3>高级链接工具</h3>
+            <div class="grid-3">
+              <label>按代码删除<textarea id="deleteCodes" placeholder="每行一个链接代码"></textarea></label>
+              <label>回收链接<textarea id="recycleCodes" placeholder="每行一个链接代码"></textarea></label>
+              <label>禁用绑定号码<textarea id="disableByCodes" placeholder="每行一个链接代码"></textarea></label>
+            </div>
+            <div class="toolbar"><button id="deleteByCodesBtn" class="danger">删除代码</button><button id="recycleBtn">回收</button><button id="disableByCodesBtn">禁用号码</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="instructions" class="tab">
+        <div class="panel stack">
+          <div class="panel-head"><h2>使用说明</h2><button id="saveInstructionBtn" class="primary">保存说明</button></div>
+          <select id="instructionGroup"></select>
+          <textarea id="instructionContent" class="editor" placeholder="用户访问链接时看到的说明"></textarea>
+          <div class="grid-2">
+            <label>图片上传<input id="imageUpload" type="file" accept="image/*"></label>
+            <label>视频上传<input id="videoUpload" type="file" accept="video/*"></label>
+          </div>
+          <p id="mediaUrl" class="muted"></p>
+        </div>
+      </section>
+
+      <section id="schedule" class="tab">
+        <div class="panel stack">
+          <div class="panel-head"><h2>定时任务</h2><button id="saveScheduleBtn" class="primary">保存设置</button></div>
+          <select id="scheduleGroup"></select>
+          <div class="grid-2">
+            <label><input id="resetEnabled" type="checkbox"> 每日重置号码使用次数</label>
+            <label>重置时间<input id="resetTime" type="time" value="00:00"></label>
+            <label><input id="deleteExpireEnabled" type="checkbox"> 删除过期号码</label>
+            <label>过期小时数<input id="deleteExpireHours" type="number" min="1" value="24"></label>
+          </div>
+          <div class="toolbar"><button id="manualResetBtn">立即重置</button><button id="manualDeleteBtn" class="danger">立即删除过期号码</button></div>
+        </div>
+      </section>
+
+      <section id="admins" class="tab">
+        <div class="panel stack">
+          <div class="panel-head"><h2>管理员</h2><button id="newAdminBtn" class="primary">新建管理员</button></div>
+          <table><thead><tr><th>ID</th><th>用户名</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead><tbody id="adminRows"></tbody></table>
+        </div>
+      </section>
+
+      <section id="security" class="tab">
+        <div class="panel stack">
+          <h2>上线安全清单</h2>
+          <ul class="checklist">
+            <li>数据库不暴露公网，账号使用最小权限。</li>
+            <li>所有短信 API token 已从旧系统重置。</li>
+            <li>Web 根目录只指向 <code>secure_v2/public</code>。</li>
+            <li><code>/storage/uploads</code> 禁止执行 PHP。</li>
+            <li>旧服务器账号、SSH key、面板账号已审计。</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="modal"><form method="dialog" id="modalForm" class="modal-card"></form></dialog>
+  <div id="toast" class="toast"></div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

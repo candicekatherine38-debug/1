@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>后台登录</title>
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body class="login-screen">
+  <main class="login-panel">
+    <h1>管理后台</h1>
+    <form id="loginForm" class="stack">
+      <label>用户名<input name="username" autocomplete="username" required></label>
+      <label>密码<input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="primary" type="submit">登录</button>
+      <p id="loginMsg" class="msg"></p>
+    </form>
+  </main>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const body = new FormData(event.currentTarget);
+      const res = await fetch('/admin/doLogin', { method: 'POST', body });
+      const data = await res.json();
+      if (data.code === 1) {
+        location.href = data.redirect_url || '/group';
+        return;
+      }
+      document.getElementById('loginMsg').textContent = data.msg || '登录失败';
+    });
+  </script>
+</body>
+</html>
